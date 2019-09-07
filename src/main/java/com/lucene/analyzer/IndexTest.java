@@ -39,26 +39,26 @@ public class IndexTest {
     /**
      * 创建 索引
      */
-    public void createIndex() {
+    public String createIndex() {
 
         // 1.查询所有数据
         List<Map<String, Object>> lists = universityService.getUniversityByMysql();
 
         //2.遍历结果集 组装document数据列表
-        Document document = new Document();
+
         lists.parallelStream().forEach(map -> { //多线程循环导致线程不安全 加入lock锁
             reentrantLock.lock();//加锁同步
             //3. 创建  Field
-
+            Document document = new Document();
             //name 要分词 要索引 要存储
-            Field fieldName = new StringField("wqe", map.get("name").toString(), Field.Store.YES);
+            Field fieldName = new TextField("wqe", map.get("name").toString(), Field.Store.YES);
             Field fieldId = new StringField("编号", map.get("id").toString(), Field.Store.YES);
             System.out.println(map.get("name").toString());
             //4.  将Field域所有对象，添加到文档对象中。调用Document.add
             document.add(fieldName);
             document.add(fieldId);
             //5.  创建一个标准分词器(Analyzer与StandardAnalyzer)，对文档中的Field域进行分词
-            StandardAnalyzer  chineseAnalyzer = new StandardAnalyzer ();
+            SmartChineseAnalyzer  chineseAnalyzer = new SmartChineseAnalyzer ();
             //CJKAnalyzer chineseAnalyzer = new CJKAnalyzer();
 
             String path = "E:\\lucene";
@@ -73,9 +73,7 @@ public class IndexTest {
                 IndexWriter writer = new IndexWriter(directory, config);
                 //9.  添加文档对象到索引库输出对象中，使用IndexWriter.addDocuments方法
                 writer.addDocument(document);
-                writer.numDocs();
                 //10.  释放资源IndexWriter.close();
-                writer.commit();//不commit就不能读到reader
                 writer.close();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -91,7 +89,7 @@ public class IndexTest {
         System.out.println("========索引创建完成======");
         System.out.println("========索引创建完成======");
         System.out.println("========索引创建完成======");
-        System.out.println("========索引创建完成======");
+        return "========索引创建完成======";
 
     }
 }
