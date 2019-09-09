@@ -11,6 +11,7 @@ import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 
 
 import java.io.IOException;
@@ -28,18 +29,15 @@ public class QueryByLucene {
 
         List<String> stringList = new ArrayList<>();
         // 1.  创建一个Directory对象，FSDirectory.open指定索引库存放的位置
-        FSDirectory directory = FSDirectory.open(Paths.get(indexPath));
-
+        //FSDirectory directory = FSDirectory.open(Paths.get(indexPath));
+        //1.将索引放在内存中
+        RAMDirectory ramDirectory = SignalRamDirectory.getSignalRamDirectory();
        /* SmartChineseAnalyzer chineseAnalyzer = new SmartChineseAnalyzer();
-
         IndexWriterConfig config = new IndexWriterConfig(chineseAnalyzer);
-
         IndexWriter writer = new IndexWriter(directory, config);
         writer.commit();*/
-
-
         // 2.  创建一个IndexReader对象，DirectoryReader.open需要指定Directory对象
-        IndexReader indexReader = DirectoryReader.open(directory);
+        IndexReader indexReader = DirectoryReader.open(ramDirectory);
         // 3.  创建一个Indexsearcher对象，直接new，需要指定IndexReader对象
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         // 4.  创建一个TermQuery对象，直接new，指定查询的域和查询的关键词new Term(域名称，关键词)
@@ -61,9 +59,6 @@ public class QueryByLucene {
            /* System.out.println("id:" + doc.get("编号"));
             System.out.println("name:" + doc.get("wqe"));*/
             stringList.add( doc.get("wqe"));
-            // System.out.println("price:" + doc.get("price"));
-            // System.out.println("pic:" + doc.get("pic"));
-            // System.out.println("description:" + doc.get("description"));
         }
         // 7.  关闭IndexReader对象
         indexReader.close();

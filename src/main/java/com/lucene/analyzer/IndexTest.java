@@ -12,6 +12,7 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -61,19 +62,21 @@ public class IndexTest {
             SmartChineseAnalyzer  chineseAnalyzer = new SmartChineseAnalyzer ();
             //CJKAnalyzer chineseAnalyzer = new CJKAnalyzer();
 
-            String path = "E:\\lucene";
+         //   String path = "E:\\lucene";
 
             //6.  指定索引储存目录，使用FSDirectory.open()方法。
             try {
                 //----------------------
-                FSDirectory directory = FSDirectory.open(Paths.get(path));
+               // FSDirectory directory = FSDirectory.open(Paths.get(path));
+                RAMDirectory ramDirectory = SignalRamDirectory.getSignalRamDirectory();
                 //7.  创建IndexWriterConfig对象，直接new，用于接下来创建IndexWriter对象
                 IndexWriterConfig config = new IndexWriterConfig(chineseAnalyzer);
                 //8.  创建IndexWriter对象，直接new
-                IndexWriter writer = new IndexWriter(directory, config);
+                IndexWriter writer = new IndexWriter(ramDirectory, config);
                 //9.  添加文档对象到索引库输出对象中，使用IndexWriter.addDocuments方法
                 writer.addDocument(document);
                 //10.  释放资源IndexWriter.close();
+                writer.commit();
                 writer.close();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -85,7 +88,6 @@ public class IndexTest {
             }
             System.out.println(integer.incrementAndGet());
         });
-
         System.out.println("========索引创建完成======");
         System.out.println("========索引创建完成======");
         System.out.println("========索引创建完成======");
