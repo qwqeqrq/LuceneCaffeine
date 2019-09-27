@@ -3,16 +3,12 @@ package com.lucene.conrtoller;
 import com.lucene.analyzer.IndexTest;
 import com.lucene.analyzer.QueryByLucene;
 import com.lucene.service.UniversityService;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.queryparser.classic.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
