@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class CaffeineCache {
 
     private static Cache<String, Object> manualCache = Caffeine.newBuilder()
-            .expireAfterWrite(3, TimeUnit.SECONDS)//十秒
+            .expireAfterWrite(60, TimeUnit.SECONDS)//十秒
             .maximumSize(100)
             .build();
 
@@ -24,14 +24,20 @@ public class CaffeineCache {
     }
 
     public static void main(String[] args) throws Exception {
-        initCache();//初始化缓存
+        String name = "卢本伟牛逼";
+        String key = "name";
+        System.out.println("最开始的时间"+System.currentTimeMillis());
+        CaffeineTest.graphs.put(key, name);
+        Thread.sleep(1000*30);
+        CaffeineTest.graphs.put(key, name);
+        System.out.println("最后续的时间"+System.currentTimeMillis());
         int a = 0;
         for (; ; ) {
-            Object value = manualCache.getIfPresent("name");
-            System.out.println("第" + (a + 1) + "秒缓存中的值为:" + Optional.ofNullable(value).orElse("null").toString());
+            Object value = CaffeineTest.graphs.getIfPresent("name");
+            System.out.println("第" + (a + 1) + "秒缓存中的值为:" + Optional.ofNullable(value).orElse("null").toString()+"===="+System.currentTimeMillis());
             Thread.sleep(1000);//延迟一秒
             a++;
-            if (a == 5) break;
+            if (a == 60) break;
         }
     }
 }
